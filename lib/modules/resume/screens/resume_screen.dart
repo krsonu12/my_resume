@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:my_portfolio/models/resume_model.dart' as pdf_model;
 import 'package:my_portfolio/modules/common/core/di.dart';
 import 'package:my_portfolio/modules/resume/core/resume_store.dart';
 import 'package:my_portfolio/modules/resume/widgets/certification_section.dart';
@@ -7,6 +8,7 @@ import 'package:my_portfolio/modules/resume/widgets/education_section.dart';
 import 'package:my_portfolio/modules/resume/widgets/experience_section.dart';
 import 'package:my_portfolio/modules/resume/widgets/personal_info_section.dart';
 import 'package:my_portfolio/modules/resume/widgets/skills_section.dart';
+import 'package:my_portfolio/services/pdf_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ResumeScreen extends StatefulWidget {
@@ -18,6 +20,8 @@ class ResumeScreen extends StatefulWidget {
 
 class ResumeScreenState extends State<ResumeScreen> {
   late final ResumeStore _resumeStore;
+  final _pdfService = PdfService();
+  bool _isGeneratingPdf = false;
 
   @override
   void initState() {
@@ -28,6 +32,137 @@ class ResumeScreenState extends State<ResumeScreen> {
 
   Future<void> _loadData() async {
     await _resumeStore.loadResume();
+  }
+
+  // Convert from module Resume model to PDF service Resume model
+  pdf_model.Resume _convertToPdfModel(resume) {
+    // Convert education entries
+    final educationEntries = resume.education.entries
+        .map((entry) => pdf_model.EducationEntry(
+              degree: entry.degree,
+              institution: entry.institution,
+              location: entry.location,
+              graduationDate: entry.graduationDate,
+              fieldOfStudy: entry.fieldOfStudy,
+            ))
+        .toList();
+
+    // Convert certifications
+    final certifications = resume.certifications
+        .map((cert) => pdf_model.Certification(
+              name: cert.name,
+              date: cert.date,
+              organization: cert.organization,
+            ))
+        .toList();
+
+    // Convert work experience
+    final workExperience = resume.workExperience
+        .map((exp) => pdf_model.WorkExperience(
+              position: exp.position,
+              company: exp.company,
+              location: exp.location,
+              startDate: exp.startDate,
+              endDate: exp.endDate,
+              responsibilities: exp.responsibilities,
+            ))
+        .toList();
+
+    // Convert skills
+    final skills = resume.skills
+        .map((skill) => pdf_model.Skill(
+              name: skill.name,
+              category: skill.category,
+            ))
+        .toList();
+
+    // Convert personal info
+    final personalInfo = pdf_model.PersonalInfo(
+      email: resume.personalInfo.email,
+      phone: resume.personalInfo.phone,
+      location: resume.personalInfo.location,
+      pincode: resume.personalInfo.pincode,
+    );
+
+    // Create and return the PDF model
+    return pdf_model.Resume(
+      name: resume.name,
+      personalInfo: personalInfo,
+      summary: resume.summary,
+      skills: skills,
+      workExperience: workExperience,
+      educationEntries: educationEntries,
+      languages: resume.languages,
+      websites: resume.websites,
+      certifications: certifications,
+    );
+  }
+
+  Future<void> _downloadPdf() async {
+    if (_resumeStore.resume == null) return;
+
+    try {
+      setState(() {
+        _isGeneratingPdf = true;
+      });
+
+      // Convert the module resume model to PDF service resume model
+      final pdfResume = _convertToPdfModel(_resumeStore.resume!);
+      final pdfBytes = await _pdfService.generateResumePdf(pdfResume);
+      final fileName =
+          '${_resumeStore.resume!.name.replaceAll(' ', '_')}_Resume.pdf';
+      await _pdfService.savePdfFile(fileName, pdfBytes);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Resume PDF downloaded successfully!')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error downloading PDF: $e')),
+        );
+      }
+    } finally {
+      setState(() {
+        _isGeneratingPdf = false;
+      });
+    }
+  }
+
+  Future<void> _printPdf() async {
+    if (_resumeStore.resume == null) return;
+
+    try {
+      setState(() {
+        _isGeneratingPdf = true;
+      });
+
+      // Convert the module resume model to PDF service resume model
+      final pdfResume = _convertToPdfModel(_resumeStore.resume!);
+
+      // Debug logging
+      print('Converting to PDF with model:');
+      print('- Name: ${pdfResume.name}');
+      print('- Education entries: ${pdfResume.educationEntries.length}');
+      print('- Certifications: ${pdfResume.certifications.length}');
+      print('- Work experience: ${pdfResume.workExperience.length}');
+
+      final pdfBytes = await _pdfService.generateResumePdf(pdfResume);
+      await _pdfService.printPdf(pdfBytes);
+    } catch (e) {
+      print('PDF print error in ResumeScreen: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error printing PDF: $e')),
+        );
+      }
+    } finally {
+      setState(() {
+        _isGeneratingPdf = false;
+      });
+    }
   }
 
   Future<void> _launchUrl(String url) async {
@@ -52,6 +187,33 @@ class ResumeScreenState extends State<ResumeScreen> {
       appBar: AppBar(
         title: const Text('Resume'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          Observer(builder: (_) {
+            if (!_resumeStore.isLoading && _resumeStore.resume != null) {
+              return Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.print),
+                    tooltip: 'Print Resume',
+                    onPressed: _isGeneratingPdf ? null : _printPdf,
+                  ),
+                  IconButton(
+                    icon: _isGeneratingPdf
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.download),
+                    tooltip: 'Download PDF',
+                    onPressed: _isGeneratingPdf ? null : _downloadPdf,
+                  ),
+                ],
+              );
+            }
+            return const SizedBox.shrink();
+          }),
+        ],
       ),
       body: Observer(
         builder: (_) {
