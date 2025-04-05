@@ -1,0 +1,99 @@
+{
+  "name": "Sonu Kumar Paswan",
+  "personalInfo": {
+    "email": "krsonu12996@gmail.com",
+    "phone": "+919525599153",
+    "location": "Jamshedpur, Jharkhand",
+    "pincode": "832108"
+  },
+  "summary": "Senior Software Engineer with a proven track record at Creativebuzz Solutions Pvt Ltd, specializing in cloud integrations and IAM. Expert in AWS and GCP, I excel in automating data synchronization and enhancing security protocols. A collaborative problem-solver, I deliver efficient, scalable solutions that drive business success.",
+  "skills": [
+    { "name": "Sailpoint" },
+    { "name": "Azure AD" },
+    { "name": "SNOW" },
+    { "name": "CherWell" },
+    { "name": "IDAM" },
+    { "name": "AWS" },
+    { "name": "IAM" },
+    { "name": "GitHub" },
+    { "name": "GCP" },
+    { "name": "Cloud Admin" }
+  ],
+  "workExperience": [
+    {
+      "company": "Creativebuzz Solutions Pvt Ltd",
+      "position": "Senior Software Engineer",
+      "location": "Ghaziabad, India",
+      "startDate": "2024-11-01",
+      "endDate": null,
+      "responsibilities": [
+        "Designed and deployed system integrations using APIs, webhooks, and cloud functions across AWS, GCP, Firebase, and Supabase.",
+        "Automated data synchronization between multiple cloud platforms using event-driven architectures (AWS Lambda, GCP Pub/Sub, Firebase Functions).",
+        "Ensured secure data handling with IAM policies, OAuth, JWT authentication, and role-based access control (RBAC).",
+        "Integrated cloud storage solutions (AWS S3, GCP Storage, Firebase Storage) with efficient data access and security controls."
+      ]
+    },
+    {
+      "company": "Cookytech Technology Pvt Ltd",
+      "position": "Associate Software Engineer",
+      "location": "Kolkata, IN",
+      "startDate": "2022-12-01",
+      "endDate": "2024-11-01",
+      "responsibilities": [
+        "System Integration & Cloud Services Experience",
+        "AWS: Integrated IAM roles, S3 storage, Lambda functions, RDS, and CloudWatch for seamless cloud-based solutions.",
+        "GCP: Implemented secure authentication and access control using GCP IAM, integrated CI/CD with GitHub",
+        "Firebase: Developed and connected Firestore, Authentication, Cloud Functions, and Realtime Database",
+        "Supabase: Configured PostgreSQL database, authentication, and edge functions for serverless backend solutions, with real-time capabilities."
+      ]
+    },
+    {
+      "company": "Khetan Group Of Industries",
+      "position": "Cloud Administrator",
+      "location": "Jamshedpur, India",
+      "startDate": "2021-09-01",
+      "endDate": "2022-12-01",
+      "responsibilities": [
+        "Working over 15+ SaaS Sites (Administrative, Self-Registration, Admin+Self Register sites)",
+        "Working on Cloud AD for manipulating user's data",
+        "Checking for user's access roles and groups with Azure AD",
+        "Doing Manual Provisioning De-provisioning",
+        "Creating Groups, User Delegation, Modification of access",
+        "Resetting passwords and managing user's directories with Azure AD",
+        "Working on On-Boarding to Off-Boarding (whole Life Cycle Management of IAM) of used on systems",
+        "Helping Users with their issues and solving with using ERPNext",
+        "Support 24x7 to our client by collaboratively working with various teams, and providing services"
+      ]
+    }
+  ],
+  "educationEntries": [
+    {
+      "degree": "Bachelor",
+      "institution": "Shree Krishna University",
+      "location": "Chhatarpur, MP",
+      "graduationDate": "2021-12-01",
+      "fieldOfStudy": "Computer Application"
+    },
+    {
+      "degree": "Intermediate",
+      "institution": "Karim City Collage",
+      "location": "Jamshedpur, Jharkhand",
+      "graduationDate": "2014-05-01",
+      "fieldOfStudy": "Science"
+    }
+  ],
+  "languages": ["Hindi: First Language", "English: Intermediate (B1)"],
+  "websites": ["linkedin.com/in/sonu-kumar-paswan83a51178"],
+  "certifications": [
+    {
+      "name": "Google analytics certification",
+      "date": "2023-02-01",
+      "organization": null
+    },
+    {
+      "name": "Cyber Security fundamentals Certification",
+      "date": "2023-02-01",
+      "organization": null
+    }
+  ]
+} 
